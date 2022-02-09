@@ -1,7 +1,6 @@
 # Common things I include in code reviews
 
-## This documentation is intendeded to make the process of writing code reviews faster.
-
+I'm also going to do a quick code review, but items below are suggestions. Take or leave them as you see fit! We do this review specifically looking for things that may be done differently between Backdrop and Drupal. We hope that this review might help with the transition for those new to Backdrop :)
 
 
 ### `README.md` suggestions
@@ -28,7 +27,7 @@
 
 ### `.module` file suggestions
 
-* The `hook_help` can be removed. (That hook does not exist in Backdrop.)
+* The `hook_help` implementation can be removed. (That hook does not exist in Backdrop.)
 * An implementation of `hook_form_alter()` will be executed on every form in Backdrop. Since it looks like this change should only affect node forms, this function could be replaced with an implementation of `hook_form_BASE_FORM_alter()` for better performance. I would rename the function to `content_limiter_form_node_form_alter()`.
 
 
@@ -37,6 +36,11 @@
 * The settings form callback could open with `$form = array('#config' => 's3fs.settings');` instead of ` $form = array();`. This `#config` item allows `system_settings_form()` to save all the values from this form into the specified config file. Then, you could delete the `s3fs_settings_form_submit()` function entirely.
 * The function `config_get()` does not include a default value like `variable_get()` did, instead defaults are set in the `.json` file included in the `/config/` directory.
 * Config keys don't need to be namespaced to begin with the module name `sendgrid_` since they will be saved in a `.json` file that contains the module name. (Many people like to leave the namespaced versions in anyway)
+
+
+### `.tokens.inc` suggestions
+
+* The `@file` docblock still references "Token module" but token is no longer a stand-alone module in Backdrop, it has been integrated into core.
 
 
 ### Template files `.tpl.php`
@@ -51,10 +55,11 @@
 
 ### Location of files in the module
 
-* We recommend all `.tpl.php` files to be placed in a `/templates/` subdirectory in the module.
-* We recommend that all `.css` files go in a  `/css/` subdirectory. (It doesn't matter so much when you only have one js file, but if there were a handful this would help keep things tidy)
-* We recommend that all `.js` files go in a  `/js/` subdirectory. (It doesn't matter so much when you only have one js file, but if there were a handful this would help keep things tidy)
-* The `tests.info` file should be moved inside the `/tests/` subdirectory (and the `file` lines within should be updated to remove the `tests` directory - so that they are still relative).
+* We recommend all `.tpl.php` files to be placed inside a `/templates/` subdirectory in the module.
+* We recommend that all `.css` files go inside a  `/css/` subdirectory. (It doesn't matter so much when you only have one js file, but if there were a handful this would help keep things tidy)
+* We recommend that all `.js` files go inside a  `/js/` subdirectory. (It doesn't matter so much when you only have one js file, but if there were a handful this would help keep things tidy)
+* We recommend that all `.test` files go inside a  `/tests/` subdirectory. Test modules should also be placed inside that directory, but also in a directory matching the name of the module.
+* The `tests.info` file should also be moved within the `/tests/` subdirectory (and the `file` lines in the `.tests.info` file should be updated to remove the `tests` directory - so that they are still relative).
 * Files that contain PHP classes should be moved into an `/includes/` subdirectory.
 
 
@@ -70,6 +75,7 @@
 * Wherever possible, strings should be wrapped in single quotes `'` instead of double quotes `"` so they will be evaluated faster (PHP will not search the string for variable replacements if it uses single quotes)
 * We do not recommend using inline styles because people often use themes that will override the CSS, and a theme would not be able to override this style if it was added inline. If you need to add styles, we recommend using the `#attached` property, and adding a stylesheet containing the neccessary CSS.
 * Array syntax still needs to be compatible with PHP 5.4 until Backdrop 2.x, so `[]` needs to be replaced with `array()`.
+* Inline code comments should start with `//` followed by a space, and end with a period `.`.
 
 
 ## Translated strings
