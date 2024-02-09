@@ -8,6 +8,10 @@ I'm also going to do a quick code review, but items below are suggestions. Take 
 * Add the required sections into the README.md file. See [this example](https://github.com/backdrop-ops/contrib/blob/main/examples/README.md) for all sections that are required, but I know Maintainers and License are not optional.
 * Fix the markdown formatting in the README.md file. (This file is parsed and used to generate the project page on backdropcms.org, see the example file for formatting suggestions)
 * Remove the duplicate README.txt file (only the .md version is necessary)
+* For the section on Issues, it would be helpful if "the issue queue" was linked to the specific GitHub queue for this module (I would assume you are already planning to do this once the link to the queue is confirmed, but noting it here just in case)
+* Please use a URL to a GitHub profile for all current maintainers.
+* If possible, please link the names directly in the Credits section, rather than printing the complete URL. For example: `Ported to Backdrop CMS by Greg OToole https://github.com/gto1` would become
+`Ported to Backdrop CMS by [Greg OToole](https://github.com/gto1)`
 
 
 ### `.info` file suggestions
@@ -47,11 +51,9 @@ I'm also going to do a quick code review, but items below are suggestions. Take 
 
 * In Drupal classes were converted from an array into a string via the process layer, which has been removed from Backdrop. In Backdrop, we make that conversion directly in the template file, so that front-end developers can have an easier time changing them. You may need to update the .tpl.php file so that <div class="<?php print $classes; ?>"... becomes <div class="<?php print implode(' ', $classes); ?>"... and <?php print $attributes; ?> becomes <?php print backdrop_attributes($attributes); ?> in order for your classes and attributes to print correctly. If it's working as expected now, these may have been flattened to strings too early, and you might want to rework that code to leave them as arrays until the template file.
 
+### Theme functions
 
-### Test files
-
-* Test dependencies should be defined in the tests themselves, so the line `test_dependencies[] = maillog` can be removed from the `.info` file. Since this is a different module entirely, it might be helpful to list this as a dependency in the README.md also.
-
+* The `hook_theme()` implementation should remain in `example.module` but all of the theme functions themselves are usually placed into a `example.theme.inc` file in Backdrop. That file name can be added into the `hook_theme()` definition as `'file' => 'example.theme.inc',` Since not all theme functions are needed at all times on all pages, having this code separated from the rest of the module code might offer a very minor performance and/or memory and/or processing benefit (but also maybe not), but more importantly, should make it easier for front-end developers to find the code they may wish override.
 
 ### Location of files in the module
 
@@ -60,8 +62,11 @@ I'm also going to do a quick code review, but items below are suggestions. Take 
 * We recommend that all `.js` files go inside a  `/js/` subdirectory. (It doesn't matter so much when you only have one js file, but if there were a handful this would help keep things tidy)
 * We recommend that all `.test` files go inside a  `/tests/` subdirectory. Test modules should also be placed inside that directory, but also in a directory matching the name of the module.
 * The `tests.info` file should also be moved within the `/tests/` subdirectory (and the `file` lines in the `.tests.info` file should be updated to remove the `tests` directory - so that they are still relative).
-* Files that contain PHP classes should be moved into an `/includes/` subdirectory.
+* Files that contain PHP classes should be placed into an `/includes/` subdirectory. This makes it easier for developers to scan the list of files and directories in a module and immediately know the module contains classes, without even needing to open any files.
 
+### Test files
+
+* Test dependencies should be defined in the tests themselves, so the line `test_dependencies[] = maillog` can be removed from the `.info` file. Since this is a different module entirely, it might be helpful to list this as a dependency in the README.md also.
 
 ## General coding standards
 
@@ -74,8 +79,9 @@ I'm also going to do a quick code review, but items below are suggestions. Take 
 * When we concatenate strings with the `.` operator, we also surround the dot with spaces on both sides to make the code easier for people to read.
 * Wherever possible, strings should be wrapped in single quotes `'` instead of double quotes `"` so they will be evaluated faster (PHP will not search the string for variable replacements if it uses single quotes)
 * We do not recommend using inline styles because people often use themes that will override the CSS, and a theme would not be able to override this style if it was added inline. If you need to add styles, we recommend using the `#attached` property, and adding a stylesheet containing the neccessary CSS.
-* Array syntax still needs to be compatible with PHP 5.4 until Backdrop 2.x, so `[]` needs to be replaced with `array()`.
+* Array syntax still needs to be compatible with PHP 5.6 until Backdrop 2.x, so `[]` needs to be replaced with `array()`.
 * Inline code comments should start with `//` followed by a space, and end with a period `.`.
+* For new functions, `@params` and `@return` should apear in the docblock. (This is not necessary for hook implementations.)
 
 
 ## Translated strings
@@ -102,9 +108,7 @@ watchdog('content_limiter', $message, $replacements);
 
 # Text for the invitation to join the contrib group!
 
-I've reviewed this module and since it meets all 3 requirements, **an invitation to join the Backdrop Contrib group is on the way!** Feel free to [transfer the repository](https://docs.backdropcms.org/documentation/after-your-application-is-accepted) into the backdrop-contrib group at any time (ask here if you have questions).
-
-I'm also going to do a quick code review with some suggestions, but that will come in a later comment.
+I've reviewed this module and since it meets all 3 requirements, **an invitation to join the Backdrop Contrib group is on the way!** Once you have accepted the invitation, feel free to [transfer the repository](https://docs.backdropcms.org/documentation/after-your-application-is-accepted) into the backdrop-contrib group at any time (ask here if you have questions).
 
 
 # Text for the top of the code review comment
