@@ -106,11 +106,6 @@ watchdog('content_limiter', $message, $replacements);
 ```
 
 
-# Text for the invitation to join the contrib group!
-
-I've reviewed this module and since it meets all 3 requirements, **an invitation to join the Backdrop Contrib group is on the way!** Once you have accepted the invitation, feel free to [transfer the repository](https://docs.backdropcms.org/documentation/after-your-application-is-accepted) into the backdrop-contrib group at any time (ask here if you have questions).
-
-
 # Text for the top of the code review comment
 
 I'm also going to do a quick code review for the module, but items in this comment are only suggestions, take or leave them as you please. We do this review specifically looking for things that may be done differently between Backdrop and Drupal in the hopes that this information might help with the transition for those new to Backdrop :)
